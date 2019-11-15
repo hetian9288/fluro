@@ -26,9 +26,9 @@ class Router {
 
   /// Creates a [PageRoute] definition for the passed [RouteHandler]. You can optionally provide a default transition type.
   void define(String routePath,
-      {@required Handler handler, TransitionType transitionType}) {
+      {@required Handler handler, Permission permission,TransitionType transitionType}) {
     _routeTree.addRoute(
-      AppRoute(routePath, handler, transitionType: transitionType),
+      AppRoute(routePath, handler, permission: permission, transitionType: transitionType),
     );
   }
 
@@ -46,8 +46,19 @@ class Router {
       bool clearStack = false,
       TransitionType transition,
       Duration transitionDuration = const Duration(milliseconds: 250),
-      RouteTransitionsBuilder transitionBuilder}) {
-    RouteMatch routeMatch = matchRoute(context, path,
+      RouteTransitionsBuilder transitionBuilder}) async {
+        AppRouteMatch match = _routeTree.matchRoute(path);
+    final _appRoute = match?.route;
+
+    // 认证拦截
+    if (_appRoute != null && _appRoute.permission != null) {
+      final auth = await _appRoute.permission(context);
+      if (auth == false) {
+        return null;
+      }
+    }
+
+    RouteMatch routeMatch = matchRoute(context, path, match,
         transitionType: transition,
         transitionsBuilder: transitionBuilder,
         transitionDuration: transitionDuration);
@@ -94,7 +105,7 @@ class Router {
   }
 
   ///
-  RouteMatch matchRoute(BuildContext buildContext, String path,
+  RouteMatch matchRoute(BuildContext buildContext, String path, AppRouteMatch match,
       {RouteSettings routeSettings,
       TransitionType transitionType,
       Duration transitionDuration = const Duration(milliseconds: 250),
@@ -103,7 +114,9 @@ class Router {
     if (routeSettings == null) {
       settingsToUse = RouteSettings(name: path);
     }
-    AppRouteMatch match = _routeTree.matchRoute(path);
+    if (match == null) {
+        match = _routeTree.matchRoute(path);
+    }
     AppRoute route = match?.route;
     Handler handler = (route != null ? route.handler : notFoundHandler);
     var transition = transitionType;
@@ -115,6 +128,7 @@ class Router {
           matchType: RouteMatchType.noMatch,
           errorMessage: "No matching route was found");
     }
+
     Map<String, List<String>> parameters =
         match?.parameters ?? <String, List<String>>{};
     if (handler.type == HandlerType.function) {
@@ -219,8 +233,7 @@ class Router {
   /// if any defined handler is found. It can also be used with the [MaterialApp.onGenerateRoute]
   /// property as callback to create routes that can be used with the [Navigator] class.
   Route<dynamic> generator(RouteSettings routeSettings) {
-    RouteMatch match =
-        matchRoute(null, routeSettings.name, routeSettings: routeSettings);
+    RouteMatch match = matchRoute(null, routeSettings.name, null, routeSettings: routeSettings);
     return match.route;
   }
 

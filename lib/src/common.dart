@@ -21,6 +21,10 @@ class Handler {
   final HandlerType type;
   final HandlerFunc handlerFunc;
 }
+/// 访问授权
+/// 返回 true 继续之前route
+/// 返回 false 返回之前页面
+typedef Future<bool> Permission(BuildContext context);
 
 ///
 typedef Route<T> RouteCreator<T>(
@@ -34,8 +38,9 @@ typedef Widget HandlerFunc(
 class AppRoute {
   String route;
   dynamic handler;
+  Permission permission;
   TransitionType transitionType;
-  AppRoute(this.route, this.handler, {this.transitionType});
+  AppRoute(this.route, this.handler, {this.permission, this.transitionType});
 }
 
 enum TransitionType {

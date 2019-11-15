@@ -23,9 +23,28 @@ class Routes {
       print("ROUTE WAS NOT FOUND !!!");
     });
     router.define(root, handler: rootHandler);
-    router.define(demoSimple, handler: demoRouteHandler);
-    router.define(demoSimpleFixedTrans,
-        handler: demoRouteHandler, transitionType: TransitionType.inFromLeft);
+    router.define(demoSimple, permission: (BuildContext context) async {
+      return await showDialog<bool>(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text("认证拦截"),
+            content: Text("认证拦截"),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text("返回"),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text("继续"),
+              )
+            ],
+          );
+        }
+      );
+    },handler: demoRouteHandler);
+    router.define(demoSimpleFixedTrans, handler: demoRouteHandler, transitionType: TransitionType.inFromLeft);
     router.define(demoFunc, handler: demoFunctionHandler);
     router.define(deepLink, handler: deepLinkHandler);
   }

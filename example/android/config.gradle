@@ -6,8 +6,8 @@ ext.appInfo = [
 
 ext.versions = [
 		minSDK: 21,
-		targetSDK: 27,
-		buildTools: '27.0.3',
+		targetSDK: 28,
+		buildTools: '28.0.3',
 		kotlin: '1.2.30',
 		googleSupport: '27.1.0'
 ]

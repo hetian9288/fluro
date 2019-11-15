@@ -18,8 +18,7 @@ var rootHandler = Handler(
   return HomeComponent();
 });
 
-var demoRouteHandler = Handler(
-    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+var demoRouteHandler = Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   String message = params["message"]?.first;
   String colorHex = params["color_hex"]?.first;
   String result = params["result"]?.first;
