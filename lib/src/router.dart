@@ -53,7 +53,7 @@ class Router {
     // 认证拦截
     if (_appRoute != null && _appRoute.permission != null) {
       final auth = await _appRoute.permission(context);
-      if (auth == false) {
+      if (auth != true) {
         return null;
       }
     }
