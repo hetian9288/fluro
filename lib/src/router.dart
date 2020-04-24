@@ -26,9 +26,12 @@ class Router {
 
   /// Creates a [PageRoute] definition for the passed [RouteHandler]. You can optionally provide a default transition type.
   void define(String routePath,
-      {@required Handler handler, Permission permission,TransitionType transitionType}) {
+      {@required Handler handler,
+      Permission permission,
+      TransitionType transitionType}) {
     _routeTree.addRoute(
-      AppRoute(routePath, handler, permission: permission, transitionType: transitionType),
+      AppRoute(routePath, handler,
+          permission: permission, transitionType: transitionType),
     );
   }
 
@@ -47,7 +50,7 @@ class Router {
       TransitionType transition,
       Duration transitionDuration = const Duration(milliseconds: 250),
       RouteTransitionsBuilder transitionBuilder}) async {
-        AppRouteMatch match = _routeTree.matchRoute(path);
+    AppRouteMatch match = _routeTree.matchRoute(path);
     final _appRoute = match?.route;
 
     // 认证拦截
@@ -105,7 +108,8 @@ class Router {
   }
 
   ///
-  RouteMatch matchRoute(BuildContext buildContext, String path, AppRouteMatch match,
+  RouteMatch matchRoute(
+      BuildContext buildContext, String path, AppRouteMatch match,
       {RouteSettings routeSettings,
       TransitionType transitionType,
       Duration transitionDuration = const Duration(milliseconds: 250),
@@ -115,7 +119,7 @@ class Router {
       settingsToUse = RouteSettings(name: path);
     }
     if (match == null) {
-        match = _routeTree.matchRoute(path);
+      match = _routeTree.matchRoute(path);
     }
     AppRoute route = match?.route;
     Handler handler = (route != null ? route.handler : notFoundHandler);
@@ -233,7 +237,8 @@ class Router {
   /// if any defined handler is found. It can also be used with the [MaterialApp.onGenerateRoute]
   /// property as callback to create routes that can be used with the [Navigator] class.
   Route<dynamic> generator(RouteSettings routeSettings) {
-    RouteMatch match = matchRoute(null, routeSettings.name, null, routeSettings: routeSettings);
+    RouteMatch match = matchRoute(null, routeSettings.name, null,
+        routeSettings: routeSettings);
     return match.route;
   }
 
